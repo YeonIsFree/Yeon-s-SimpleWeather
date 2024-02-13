@@ -47,9 +47,7 @@ class TimeForeCastCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-     // MARK: - 
-    
+
      // MARK: - UI Configuration Method
     
     private func render() {
@@ -64,7 +62,7 @@ class TimeForeCastCollectionViewCell: UICollectionViewCell {
         weatherImageView.snp.makeConstraints { make in
             make.top.equalTo(timeLabel.snp.bottom)
             make.horizontalEdges.equalTo(contentView)
-            make.height.equalTo(100)
+            make.height.equalTo(80)
         }
         
         contentView.addSubview(tempLabel)

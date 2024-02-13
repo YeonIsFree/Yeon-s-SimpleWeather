@@ -9,6 +9,6 @@ import Foundation
 
 enum HomeSection: Int, CaseIterable {
     case timeForeCast
-    case weeklyForeCase
+    case weeklyForeCast
     case location
 }

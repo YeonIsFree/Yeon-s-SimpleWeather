@@ -11,8 +11,9 @@ class WeeklyForeCastTableViewCell: UITableViewCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "주간 예보 (5일)"
+        label.text = "주간 예보 5일치만 표기하고 싶은데 🥲"
         label.font = .boldSystemFont(ofSize: 22)
+        label.textColor = .systemIndigo
         return label
     }()
     
@@ -26,6 +27,7 @@ class WeeklyForeCastTableViewCell: UITableViewCell {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
 

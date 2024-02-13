@@ -18,42 +18,43 @@ class HomeViewController: UIViewController {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "나의 위치"
-        label.font = .systemFont(ofSize: 22)
+        label.font = .boldSystemFont(ofSize: 22)
+        label.textAlignment = .center
         return label
     }()
     
     let titleCityLabel: UILabel = {
         let label = UILabel()
-        label.text = "고양시"
-        label.font = .systemFont(ofSize: 14)
+        label.font = .boldSystemFont(ofSize: 20)
+        label.textAlignment = .center
         return label
     }()
     
     let tempLabel: UILabel = {
         let label = UILabel()
-        label.text = "61˚"
-        label.font = .systemFont(ofSize: 72)
+        label.font = .boldSystemFont(ofSize: 72)
+        label.textAlignment = .center
         return label
     }()
     
     let weatherLabel: UILabel = {
         let label = UILabel()
-        label.text = "대체로 맑음(데이터 받아와야함)"
-        label.font = .systemFont(ofSize: 20)
+        label.font = .boldSystemFont(ofSize: 22)
+        label.textAlignment = .center
         return label
     }()
     
     let maxTempLabel: UILabel = {
         let label = UILabel()
-        label.text = "최고: 7˚"
-        label.font = .systemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 22)
+        label.textAlignment = .center
         return label
     }()
     
     let minTempLabel: UILabel = {
         let label = UILabel()
-        label.text = "최저: -5˚"
-        label.font = .systemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 22)
+        label.textAlignment = .center
         return label
     }()
     
@@ -66,7 +67,9 @@ class HomeViewController: UIViewController {
     
     let tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
-        tableView.backgroundColor = .systemYellow
+        tableView.separatorStyle = .none
+        tableView.allowsSelection = false
+        tableView.backgroundColor = .clear
         return tableView
     }()
     
@@ -75,7 +78,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(resource: .color)
         
         getData()
         configureTableView()
@@ -90,14 +93,21 @@ extension HomeViewController {
         // SEOUL Code: 1835847
         // JEJU  Code: 1846266
         let group = DispatchGroup()
-        
+    
         group.enter()
         DispatchQueue.global().async {
             fetchCurrentWeather(cityID: 1835847) { currentModel in
+                
+                // [ 현재 날씨를 구성 ] : 첫 진입 시 서울을 기준으로 모든 데이터를 구성
+                
                 // 도시 이름
                 self.titleCityLabel.text = currentModel.name
+                
                 // 현재 기온
                 self.tempLabel.text = MeasurementFormatter.convertTemperature(currentModel.main.temp)
+                
+                // 날씨 표시
+                self.weatherLabel.text = currentModel.weather.first?.description
                 
                 // 최고 최저 온도
                 self.minTempLabel.text = MeasurementFormatter.convertTemperature(currentModel.main.temp_min)
@@ -130,11 +140,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.row {
-            // 3시간 간격 일기 예보
+            // [1] 3시간 간격 일기 예보
         case HomeSection.timeForeCast.rawValue:
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: TimeForeCastTableViewCell.identifier,
                 for: indexPath) as? TimeForeCastTableViewCell else { return UITableViewCell() }
+            
+            cell.backgroundColor = .systemGray
             
             // 셀 안에 컬렉션 뷰에 태그 설정
             cell.timeCollectionView.tag = indexPath.row
@@ -149,8 +161,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             
             return cell
             
-        case HomeSection.weeklyForeCase.rawValue:
+            // [2] 5일 주간 예보
+        case HomeSection.weeklyForeCast.rawValue:
             guard let cell = tableView.dequeueReusableCell(withIdentifier: WeeklyForeCastTableViewCell.identifier, for: indexPath) as? WeeklyForeCastTableViewCell else { return UITableViewCell() }
+            
+            cell.backgroundColor = .systemGray2
             
             // 셀 안 컬렉션 뷰에 태그 설정
             cell.weekCollectionView.tag = indexPath.row
@@ -169,12 +184,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch indexPath.row {
-        case HomeSection.timeForeCast.rawValue:
-            return 220
-        default:
-            return 250
-        }
+        return 220
     }
 }
 
@@ -195,7 +205,14 @@ extension HomeViewController {
 
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return foreCastList.count
+        switch collectionView.tag {
+        case HomeSection.timeForeCast.rawValue:
+            return foreCastList.count
+        case HomeSection.weeklyForeCast.rawValue:
+            return foreCastList.count
+        default:
+            return 0
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, 
@@ -208,10 +225,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 for: indexPath) as? TimeForeCastCollectionViewCell else { return UICollectionViewCell() }
             
             let dt = Date(timeIntervalSince1970: TimeInterval(foreCastList[indexPath.item].dt))
-            
             cell.timeLabel.text = DateFormatter.convertTime(dt)
             
-            let iconName = foreCastList[indexPath.item].weather[0].icon
+            let iconName = foreCastList[indexPath.item].weather.first!.icon
             if let urlString = URL(string: "https://openweathermap.org/img/wn/\(iconName)@2x.png") {
                 cell.weatherImageView.kf.setImage(with: urlString)
             }
@@ -220,8 +236,23 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             
             return cell
             
-        case HomeSection.weeklyForeCase.rawValue:
+        case HomeSection.weeklyForeCast.rawValue:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeekForeCastCollectionViewCell.identifier, for: indexPath) as? WeekForeCastCollectionViewCell else { return UICollectionViewCell() }
+            
+            // 요일
+            let dtString = foreCastList[indexPath.item].dt_txt
+            cell.dayLabel.text = DateFormatter.convertDay(dtString)
+            
+            // 아이콘 이미지
+            let iconName = foreCastList[indexPath.item].weather[0].icon
+            if let urlString = URL(string: "https://openweathermap.org/img/wn/\(iconName)@2x.png") {
+                cell.iconImageView.kf.setImage(with: urlString)
+            }
+            
+            // 최저 최고 온도
+            cell.minTempLabel.text = MeasurementFormatter.convertTemperature(foreCastList[indexPath.item].main.temp_min)
+            cell.maxTempLabel.text = MeasurementFormatter.convertTemperature(foreCastList[indexPath.item].main.temp_max)
+            
             return cell
             
         default:
@@ -252,7 +283,7 @@ extension HomeViewController {
         view.addSubview(tempLabel)
         tempLabel.snp.makeConstraints { make in
             make.top.equalTo(titleCityLabel.snp.bottom).offset(10)
-            make.centerX.equalTo(view.safeAreaLayoutGuide).offset(15)
+            make.centerX.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.height.equalTo(72)
         }
         

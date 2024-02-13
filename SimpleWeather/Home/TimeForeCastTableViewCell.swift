@@ -11,8 +11,9 @@ class TimeForeCastTableViewCell: UITableViewCell {
     
     let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "시간 예보 (3시간)"
+        label.text = "3시간 간격 예보"
         label.font = .boldSystemFont(ofSize: 22)
+        label.textColor = .systemIndigo
         return label
     }()
     
@@ -27,6 +28,7 @@ class TimeForeCastTableViewCell: UITableViewCell {
         layout.scrollDirection = .horizontal
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
         return collectionView
     }()
     
@@ -54,7 +56,7 @@ extension TimeForeCastTableViewCell {
         
         contentView.addSubview(timeCollectionView)
         timeCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.top.equalTo(titleLabel.snp.bottom).offset(3)
             make.horizontalEdges.bottom.equalTo(contentView)
         }
     }

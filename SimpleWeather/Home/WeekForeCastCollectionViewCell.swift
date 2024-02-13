@@ -11,7 +11,6 @@ class WeekForeCastCollectionViewCell: UICollectionViewCell {
     
     let dayLabel: UILabel = {
         let label = UILabel()
-        label.text = "오늘"
         label.font = .boldSystemFont(ofSize: 20)
         label.textAlignment = .center
         label.backgroundColor = .systemTeal
@@ -20,7 +19,6 @@ class WeekForeCastCollectionViewCell: UICollectionViewCell {
     
     let iconImageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.image = UIImage(systemName: "sun.dust")
         imageView.contentMode = .scaleAspectFit
         imageView.backgroundColor = .systemMint
         return imageView
@@ -28,7 +26,6 @@ class WeekForeCastCollectionViewCell: UICollectionViewCell {
     
     let minTempLabel: UILabel = {
         let label = UILabel()
-        label.text = "-5"
         label.font = .boldSystemFont(ofSize: 20)
         label.textAlignment = .center
         label.backgroundColor = .systemBlue
@@ -37,7 +34,6 @@ class WeekForeCastCollectionViewCell: UICollectionViewCell {
     
     let maxTempLabel: UILabel = {
         let label = UILabel()
-        label.text = "7"
         label.font = .boldSystemFont(ofSize: 20)
         label.textAlignment = .center
         label.backgroundColor = .systemCyan
@@ -68,32 +64,5 @@ class WeekForeCastCollectionViewCell: UICollectionViewCell {
         stackView.snp.makeConstraints { make in
             make.edges.equalTo(contentView.safeAreaLayoutGuide)
         }
-        
-//        contentView.addSubview(dayLabel)
-//        dayLabel.snp.makeConstraints { make in
-//            make.top.leading.bottom.equalTo(contentView)
-//            make.width.equalTo(100)
-//        }
-//        
-//        contentView.addSubview(iconImageView)
-//        iconImageView.snp.makeConstraints { make in
-//            make.leading.equalTo(dayLabel.snp.trailing).offset(20)
-//            make.width.equalTo(100)
-//            make.top.bottom.equalTo(contentView)
-//        }
-//        
-//        contentView.addSubview(minTempLabel)
-//        minTempLabel.snp.makeConstraints { make in
-//            make.leading.equalTo(iconImageView.snp.trailing).offset(20)
-//            make.width.equalTo(50)
-//            make.top.bottom.equalTo(contentView)
-//        }
-//        
-//        contentView.addSubview(maxTempLabel)
-//        maxTempLabel.snp.makeConstraints { make in
-//            make.leading.equalTo(minTempLabel.snp.trailing)
-//            make.width.equalTo(50)
-//            make.top.bottom.equalTo(contentView)
-//        }
     }
 }

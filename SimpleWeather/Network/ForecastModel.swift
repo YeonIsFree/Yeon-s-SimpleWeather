@@ -16,6 +16,7 @@ struct ForeCast: Decodable {
     let dt: Int
     let main: Main
     let weather: [Weather]
+    let dt_txt: String
 }
 
 func fetchForecast(cityID: Int, completionHandler: @escaping ([ForeCast]) -> Void ) {
